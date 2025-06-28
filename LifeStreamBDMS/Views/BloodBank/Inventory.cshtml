@@ -1,0 +1,430 @@
+﻿@model IEnumerable<LifeStreamBDMS.Models.BloodInventory>
+
+@{
+    ViewData["Title"] = "Blood Inventory Management";
+}
+
+<!-- Modern CSS and Font Imports -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<div class="inventory-container">
+    <!-- Header Section -->
+    <div class="inventory-header">
+        <h2 class="inventory-title">
+            <i class="fas fa-tint blood-icon"></i> Blood Inventory Management
+        </h2>
+        <div class="action-buttons">
+            <a asp-action="Create" asp-controller="BloodBank" class="btn btn-add">
+                <i class="fas fa-plus-circle"></i> Add New Stock
+            </a>
+            <a asp-controller="Donor" asp-action="ViewRegisteredDonors" class="btn btn-donors">
+                <i class="fas fa-users"></i> View Donors
+            </a>
+        </div>
+    </div>
+
+    <!-- Inventory Content -->
+    <div class="inventory-content">
+        @if (!Model.Any())
+        {
+            <div class="empty-state">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>No inventory data available. Please add blood stock.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-container">
+                <table class="inventory-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-tint"></i> Blood Type</th>
+                            <th><i class="fas fa-flask"></i> Available Units</th>
+                            <th><i class="fas fa-calendar-alt"></i> Last Updated</th>
+                            <th><i class="fas fa-info-circle"></i> Status</th>
+                            <th><i class="fas fa-cog"></i> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td data-label="Blood Type">
+                                    <span class="blood-type @item.BloodType.Replace("+","positive").Replace("-","negative")">
+                                        @Html.DisplayFor(modelItem => item.BloodType)
+                                    </span>
+                                </td>
+                                <td data-label="Available Units" class="units">
+                                    @Html.DisplayFor(modelItem => item.AvailableUnits)
+                                    <span class="unit-label">units</span>
+                                </td>
+                                <td data-label="Last Updated">
+                                    <span class="date">
+                                        <i class="far fa-clock"></i>
+                                        @item.LastUpdated.ToString("MMM dd, yyyy")
+                                    </span>
+                                </td>
+                                <td data-label="Status">
+                                    <span class="status-badge status-@item.Status.ToLower()">
+                                        @Html.DisplayFor(modelItem => item.Status)
+                                    </span>
+                                </td>
+                                <td data-label="Actions" class="actions">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn-edit">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn-delete">
+                                        <i class="fas fa-trash-alt"></i> Delete
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    /* Base Styles */
+    :root {
+        --primary-color: #e63946;
+        --secondary-color: #457b9d;
+        --success-color: #2a9d8f;
+        --warning-color: #e9c46a;
+        --danger-color: #ef233c;
+        --light-color: #f8f9fa;
+        --dark-color: #212529;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f5f7fa;
+        color: #333;
+        line-height: 1.6;
+    }
+
+    /* Inventory Container */
+    .inventory-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    /* Header Styles */
+    .inventory-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .inventory-title {
+        font-weight: 600;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .blood-icon {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    /* Button Styles */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-add {
+        background-color: var(--success-color);
+        color: white;
+    }
+
+        .btn-add:hover {
+            background-color: #248277;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(42, 157, 143, 0.3);
+        }
+
+    .btn-donors {
+        background-color: var(--secondary-color);
+        color: white;
+    }
+
+        .btn-donors:hover {
+            background-color: #3a6a8a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(69, 123, 157, 0.3);
+        }
+
+    /* Empty State */
+    .empty-state {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+        .empty-state i {
+            font-size: 2rem;
+            color: var(--warning-color);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+    /* Table Styles */
+    .table-container {
+        background-color: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .inventory-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .inventory-table thead {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .inventory-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+            .inventory-table th i {
+                margin-right: 0.5rem;
+            }
+
+        .inventory-table tbody tr {
+            border-bottom: 1px solid #eee;
+            transition: all 0.2s ease;
+        }
+
+            .inventory-table tbody tr:last-child {
+                border-bottom: none;
+            }
+
+            .inventory-table tbody tr:hover {
+                background-color: #f8f9fa;
+            }
+
+        .inventory-table td {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+
+    /* Blood Type Styles */
+    .blood-type {
+        display: inline-block;
+        padding: 0.3rem 0.6rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+    }
+
+    /* Status Badges */
+    .status-badge {
+        display: inline-block;
+        padding: 0.35rem 0.7rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-transform: capitalize;
+    }
+
+    .status-available {
+        background-color: rgba(42, 157, 143, 0.1);
+        color: var(--success-color);
+    }
+
+    .status-critical {
+        background-color: rgba(239, 35, 60, 0.1);
+        color: var(--danger-color);
+    }
+
+    .status-low {
+        background-color: rgba(233, 196, 106, 0.1);
+        color: #d4a017;
+    }
+
+    /* Action Buttons */
+    .actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-edit, .btn-delete {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+
+    .btn-edit {
+        background-color: rgba(233, 196, 106, 0.1);
+        color: #d4a017;
+        border: 1px solid rgba(233, 196, 106, 0.3);
+    }
+
+        .btn-edit:hover {
+            background-color: rgba(233, 196, 106, 0.2);
+            transform: translateY(-1px);
+        }
+
+    .btn-delete {
+        background-color: rgba(239, 35, 60, 0.1);
+        color: var(--danger-color);
+        border: 1px solid rgba(239, 35, 60, 0.3);
+    }
+
+        .btn-delete:hover {
+            background-color: rgba(239, 35, 60, 0.2);
+            transform: translateY(-1px);
+        }
+
+    /* Units Display */
+    .units {
+        font-weight: 600;
+        color: var(--dark-color);
+    }
+
+    .unit-label {
+        font-size: 0.8rem;
+        color: #6c757d;
+        margin-left: 0.2rem;
+    }
+
+    /* Date Display */
+    .date {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    /* Responsive Table */
+    @@media (max-width: 768px) {
+        .inventory-table {
+            display: block;
+            overflow-x: auto;
+        }
+
+        .inventory-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .action-buttons {
+            width: 100%;
+        }
+
+        .btn {
+            flex: 1;
+            justify-content: center;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .inventory-table td {
+            display: block;
+            text-align: right;
+            padding-left: 50%;
+            position: relative;
+        }
+
+            .inventory-table td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 1rem;
+                width: calc(50% - 1rem);
+                padding-right: 1rem;
+                text-align: left;
+                font-weight: 600;
+                color: var(--dark-color);
+            }
+
+        .inventory-table thead {
+            display: none;
+        }
+
+        .inventory-table tbody tr {
+            display: block;
+            margin-bottom: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+        }
+
+        .inventory-table td {
+            border-bottom: 1px solid #dee2e6;
+        }
+
+            .inventory-table td:last-child {
+                border-bottom: none;
+            }
+
+        .actions {
+            justify-content: flex-end;
+        }
+    }
+</style>
+
+<script>
+    // Add any interactive JavaScript here
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add animation to table rows
+        const rows = document.querySelectorAll('.inventory-table tbody tr');
+        rows.forEach((row, index) => {
+            row.style.opacity = '0';
+            row.style.transform = 'translateY(20px)';
+            row.style.transition = `all 0.3s ease ${index * 0.05}s`;
+
+            setTimeout(() => {
+                row.style.opacity = '1';
+                row.style.transform = 'translateY(0)';
+            }, 50);
+        });
+    });
+</script>

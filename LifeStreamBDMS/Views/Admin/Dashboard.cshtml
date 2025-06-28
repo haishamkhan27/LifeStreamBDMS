@@ -1,0 +1,768 @@
+﻿@inject IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    var userRole = HttpContextAccessor.HttpContext?.Session.GetString("UserRole") ?? "Guest";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - LifeStreamBDMS</title>
+
+    <!-- Include Font Awesome and Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Include Animate.css for animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Background overlay -->
+        <div class="background-overlay"></div>
+
+        <!-- Sidebar Navigation - Fixed to the left -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <img src="https://cdn-icons-png.flaticon.com/512/3266/3266895.png" alt="Logo" class="logo">
+                <h3>LifeStreamBDMS</h3>
+            </div>
+            <ul class="nav-links">
+                <li class="active">
+                    <a href="#"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
+                </li>
+                <li>
+                    <a asp-controller="BloodBank" asp-action="Inventory"><i class="fas fa-tint"></i> <span>Blood Inventory</span></a>
+                </li>
+                <li>
+                    <a asp-controller="BloodRequest" asp-action="AllRequest"><i class="fas fa-hand-holding-medical"></i> <span>Blood Requests</span></a>
+                </li>
+                <li>
+                    <a asp-controller="Donor" asp-action="ViewRegisteredDonors"><i class="fas fa-user-friends"></i> <span>Donors</span></a>
+                </li>
+                <li>
+                    <a asp-controller="Account" asp-action="RegisterAdmin">
+                        <i class="fas fa-user-plus"></i> <span>Register Admin</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#"><i class="fas fa-cog"></i> <span>Settings</span></a>
+                </li>
+            </ul>
+            <div class="logout-btn">
+                <a href="#"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
+            </div>
+            <div class="dark-mode-toggle">
+                <label class="switch">
+                    <input type="checkbox" id="darkModeToggle">
+                    <span class="slider round"></span>
+                </label>
+                <span>Dark Mode</span>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Top Navigation -->
+            <div class="top-nav">
+                <div class="welcome-message">
+                    <h4>Welcome back, <span>Admin</span>!</h4>
+                    <p>@DateTime.Now.ToString("dddd, MMMM dd, yyyy")</p>
+                </div>
+                <div class="user-profile">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="User">
+                    <div class="user-info">
+                        <h5>Administrator</h5>
+                        <p>Super Admin</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Cards -->
+            <div class="dashboard-cards">
+                <div class="card blood-inventory animate__animated animate__fadeInUp">
+                    <div class="card-icon">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Blood Inventory</h3>
+                        <p>Manage blood stock levels</p>
+                        <a asp-controller="BloodBank" asp-action="Inventory" class="card-link">View Details <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="card pending-requests animate__animated animate__fadeInUp animate__delay-1s">
+                    <div class="card-icon">
+                        <i class="fas fa-hourglass-half"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Pending Requests</h3>
+                        <p>Review urgent blood needs</p>
+                        <a asp-controller="BloodRequest" asp-action="PendingRequests" class="card-link">View Details <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="card registered-donors animate__animated animate__fadeInUp animate__delay-2s">
+                    <div class="card-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Registered Donors</h3>
+                        <p>Manage donor database</p>
+                        <a asp-controller="Donor" asp-action="ViewRegisteredDonors" class="card-link">View Details <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="card blood-requests animate__animated animate__fadeInUp animate__delay-3s">
+                    <div class="card-icon">
+                        <i class="fas fa-hand-holding-medical"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>All Requests</h3>
+                        <p>View all blood requests</p>
+                        <a asp-controller="BloodRequest" asp-action="AllRequest" class="card-link">View Details <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats Section -->
+            <div class="quick-stats">
+                <h4 class="section-title">Quick Stats</h4>
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-tint text-danger"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h5>Total Blood Units</h5>
+                            <h2>1,248</h2>
+                            <p class="text-success"><i class="fas fa-arrow-up"></i> 12% this month</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-procedures text-primary"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h5>Pending Requests</h5>
+                            <h2>24</h2>
+                            <p class="text-danger"><i class="fas fa-arrow-up"></i> 3 new today</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-plus text-success"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h5>New Donors</h5>
+                            <h2>56</h2>
+                            <p class="text-success"><i class="fas fa-arrow-up"></i> 8% this week</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle text-info"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h5>Completed Requests</h5>
+                            <h2>312</h2>
+                            <p class="text-success"><i class="fas fa-arrow-up"></i> 15% this month</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modern JavaScript for Interactive Elements -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Dark Mode Toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const body = document.body;
+
+        // Check for saved user preference
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            body.classList.add('dark-mode');
+            darkModeToggle.checked = true;
+        }
+
+        darkModeToggle.addEventListener('change', function() {
+            if (this.checked) {
+                body.classList.add('dark-mode');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                body.classList.remove('dark-mode');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        });
+
+        // Add hover effects to cards
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-5px)';
+                card.style.boxShadow = '0 10px 20px rgba(0,0,0,0.2)';
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+                card.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+            });
+        });
+
+        // Sidebar navigation active state
+        const navLinks = document.querySelectorAll('.nav-links li');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.forEach(item => item.classList.remove('active'));
+                link.classList.add('active');
+            });
+        });
+
+        // Initialize charts (example)
+        document.addEventListener('DOMContentLoaded', function() {
+            // This is where you would initialize Chart.js charts if needed
+            // Example:
+            /*
+            const ctx = document.getElementById('bloodInventoryChart').getContext('2d');
+            const bloodInventoryChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+                    datasets: [{
+                        label: 'Blood Units Available',
+                        data: [120, 80, 150, 70, 60, 30, 200, 90],
+                        backgroundColor: '#e63946'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            */
+        });
+    </script>
+
+    <style>
+        /* Base Styles */
+        :root {
+            --primary-color: #e63946;
+            --secondary-color: #457b9d;
+            --accent-color: #a8dadc;
+            --dark-color: #1d3557;
+            --light-color: #f1faee;
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            overflow-x: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+
+            /* Background with blood donation theme */
+            .dashboard-container::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: url('https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center;
+                background-size: cover;
+                opacity: 0.1;
+                z-index: -1;
+            }
+
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(230, 57, 70, 0.1) 0%, rgba(69, 123, 157, 0.1) 100%);
+            z-index: -1;
+        }
+
+        /* Sidebar Styles - Fixed to the left */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+            .sidebar-header .logo {
+                width: 40px;
+                height: 40px;
+                margin-right: 10px;
+            }
+
+            .sidebar-header h3 {
+                font-weight: 600;
+                color: var(--primary-color);
+            }
+
+        .nav-links {
+            flex: 1;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+
+            .nav-links li {
+                list-style: none;
+                margin-bottom: 5px;
+            }
+
+                .nav-links li a {
+                    display: flex;
+                    align-items: center;
+                    padding: 12px 20px;
+                    color: #555;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    transition: all 0.3s ease;
+                }
+
+                    .nav-links li a i {
+                        margin-right: 10px;
+                        width: 20px;
+                        text-align: center;
+                    }
+
+                .nav-links li:hover a {
+                    background-color: rgba(230, 57, 70, 0.1);
+                    color: var(--primary-color);
+                }
+
+                .nav-links li.active a {
+                    background-color: var(--primary-color);
+                    color: white;
+                }
+
+        .logout-btn {
+            padding: 20px;
+            border-top: 1px solid #eee;
+        }
+
+            .logout-btn a {
+                display: flex;
+                align-items: center;
+                color: #555;
+                text-decoration: none;
+            }
+
+                .logout-btn a:hover {
+                    color: var(--primary-color);
+                }
+
+                .logout-btn a i {
+                    margin-right: 10px;
+                }
+
+        .dark-mode-toggle {
+            display: flex;
+            align-items: center;
+            padding: 0 20px 20px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+            margin-right: 10px;
+        }
+
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 16px;
+                width: 16px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                transition: .4s;
+                border-radius: 50%;
+            }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+            input:checked + .slider:before {
+                transform: translateX(26px);
+            }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 10px 0;
+        }
+
+        .welcome-message h4 {
+            font-weight: 600;
+            color: #333;
+        }
+
+            .welcome-message h4 span {
+                color: var(--primary-color);
+            }
+
+        .welcome-message p {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+
+            .user-profile img {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                margin-right: 10px;
+            }
+
+        .user-info h5 {
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+
+        .user-info p {
+            color: #777;
+            font-size: 12px;
+            margin-bottom: 0;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 24px;
+        }
+
+        .blood-inventory .card-icon {
+            background-color: rgba(230, 57, 70, 0.1);
+            color: var(--primary-color);
+        }
+
+        .pending-requests .card-icon {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+
+        .registered-donors .card-icon {
+            background-color: rgba(13, 110, 253, 0.1);
+            color: #0d6efd;
+        }
+
+        .blood-requests .card-icon {
+            background-color: rgba(25, 135, 84, 0.1);
+            color: #198754;
+        }
+
+        .card-info h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .card-info p {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 10px;
+        }
+
+        .card-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+            .card-link i {
+                margin-left: 5px;
+                transition: transform 0.3s ease;
+            }
+
+            .card-link:hover i {
+                transform: translateX(3px);
+            }
+
+        /* Quick Stats */
+        .section-title {
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+            .section-title::after {
+                content: '';
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                width: 50px;
+                height: 3px;
+                background-color: var(--primary-color);
+            }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+            .stat-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .stat-info h5 {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 5px;
+        }
+
+        .stat-info h2 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .stat-info p {
+            font-size: 12px;
+            margin-bottom: 0;
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+            body.dark-mode .sidebar,
+            body.dark-mode .card,
+            body.dark-mode .stat-card {
+                background-color: #1e1e1e;
+                color: #e0e0e0;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            }
+
+            body.dark-mode .sidebar-header h3,
+            body.dark-mode .welcome-message h4,
+            body.dark-mode .card-info h3,
+            body.dark-mode .stat-info h2,
+            body.dark-mode .section-title {
+                color: #ffffff;
+            }
+
+            body.dark-mode .nav-links li a,
+            body.dark-mode .logout-btn a,
+            body.dark-mode .welcome-message p,
+            body.dark-mode .user-info p,
+            body.dark-mode .card-info p,
+            body.dark-mode .stat-info h5,
+            body.dark-mode .stat-info p {
+                color: #b0b0b0;
+            }
+
+            body.dark-mode .nav-links li:hover a {
+                background-color: rgba(230, 57, 70, 0.2);
+            }
+
+            body.dark-mode .dashboard-container::before {
+                opacity: 0.05;
+            }
+
+            body.dark-mode .background-overlay {
+                background: linear-gradient(135deg, rgba(230, 57, 70, 0.05) 0%, rgba(69, 123, 157, 0.05) 100%);
+            }
+
+        /* Responsive Styles */
+        @@media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+                overflow: hidden;
+            }
+
+            .sidebar-header h3,
+            .nav-links li a span,
+            .logout-btn a span,
+            .dark-mode-toggle span {
+                display: none;
+            }
+
+            .nav-links li a {
+                justify-content: center;
+                padding: 12px;
+            }
+
+                .nav-links li a i {
+                    margin-right: 0;
+                    font-size: 20px;
+                }
+
+            .main-content {
+                margin-left: 80px;
+                padding: 20px;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .dashboard-cards {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+
+            .top-nav {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .user-profile {
+                margin-top: 10px;
+            }
+
+            .main-content {
+                padding: 15px;
+            }
+        }
+    </style>
+</body>
+</html>

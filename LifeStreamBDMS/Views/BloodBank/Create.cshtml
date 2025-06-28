@@ -1,0 +1,26 @@
+﻿@model LifeStreamBDMS.Models.BloodInventory
+
+<h2>Add Blood Inventory</h2>
+
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="BloodType" class="form-label">Blood Type</label>
+        <select asp-for="BloodType" class="form-select">
+            <option>A+</option>
+            <option>B+</option>
+            <option>O+</option>
+            <option>AB+</option>
+        </select>
+        <span asp-validation-for="BloodType" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="AvailableUnits" class="form-label">Available Units</label>
+        <input asp-for="AvailableUnits" type="number" class="form-control" />
+        <span asp-validation-for="AvailableUnits" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Add Inventory</button>
+</form>

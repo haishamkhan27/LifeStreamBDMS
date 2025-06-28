@@ -1,0 +1,250 @@
+﻿@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var userRole = HttpContextAccessor.HttpContext?.Session.GetString("UserRole") ?? "Guest";
+    var isDarkMode = HttpContextAccessor.HttpContext?.Session.GetString("DarkMode") == "enabled";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - LifeStreamBDMS</title>
+
+    <!-- Modern Dependencies -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    @RenderSection("Styles", required: false)
+
+    <style>
+        :root {
+            --primary-color: #e63946;
+            --secondary-color: #457b9d;
+            --accent-color: #a8dadc;
+            --dark-color: #1d3557;
+            --light-color: #f1faee;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(230, 57, 70, 0.1) 0%, rgba(69, 123, 157, 0.1) 100%);
+            z-index: -1;
+        }
+
+        /* Modern Navbar */
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-link {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+            .nav-link:hover {
+                color: var(--primary-color) !important;
+            }
+
+            .nav-link::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background: var(--primary-color);
+                transition: width 0.3s ease;
+            }
+
+            .nav-link:hover::after {
+                width: 100%;
+            }
+
+        /* Dark Mode Styles */
+        .dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+            .dark-mode .navbar {
+                background-color: #1e1e1e !important;
+                border-bottom: 1px solid #333;
+            }
+
+            .dark-mode .nav-link {
+                color: #b0b0b0 !important;
+            }
+
+            .dark-mode .navbar-brand {
+                color: #fff !important;
+            }
+
+            .dark-mode .btn-secondary {
+                background-color: #333;
+                border-color: #444;
+            }
+
+            .dark-mode footer {
+                border-color: #333 !important;
+            }
+    </style>
+</head>
+<body class="@(isDarkMode ? "dark-mode" : "")">
+    @if (userRole == "Admin")
+    {
+        <!-- Admin Dashboard Layout -->
+        <div class="dashboard-container">
+            <div class="background-overlay"></div>
+
+            <!-- Sidebar -->
+            <div class="sidebar bg-white shadow-sm" style="width: 280px;">
+                <div class="sidebar-header p-4 border-bottom">
+                    <h3 class="text-danger fw-bold mb-0">
+                        <i class="fas fa-tint me-2"></i>LifeStreamBDMS
+                    </h3>
+                </div>
+
+                <div class="px-3 py-4">
+                    <div class="list-group">
+                        <a asp-controller="Admin" asp-action="Dashboard" class="list-group-item list-group-item-action border-0">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </a>
+                        <a asp-controller="BloodBank" asp-action="Inventory" class="list-group-item list-group-item-action border-0">
+                            <i class="fas fa-tint me-2"></i>Blood Inventory
+                        </a>
+                        <a asp-controller="BloodRequest" asp-action="PendingRequests" class="list-group-item list-group-item-action border-0">
+                            <i class="fas fa-hand-holding-medical me-2"></i>Blood Requests
+                        </a>
+                        <a asp-controller="Donor" asp-action="ViewRegisteredDonors" class="list-group-item list-group-item-action border-0">
+                            <i class="fas fa-users me-2"></i>Donors
+                        </a>
+                        <a asp-controller="Account" asp-action="RegisterAdmin" class="list-group-item list-group-item-action border-0">
+                            <i class="fas fa-user-plus me-2"></i>Register Admin
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <main class="flex-grow-1 p-4" style="margin-left: 280px;">
+                <!-- Top Nav -->
+                <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4 rounded shadow-sm">
+                    <div class="container-fluid">
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-secondary me-3" id="darkModeToggle">
+                                <i class="fas @(isDarkMode ? "fa-sun" : "fa-moon")"></i>
+                            </button>
+                            <span class="text-muted">@DateTime.Now.ToString("dddd, MMMM dd, yyyy")</span>
+                        </div>
+
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <span class="text-primary">Welcome, Admin!</span>
+                            </div>
+                            <a asp-controller="Account" asp-action="Logout" class="btn btn-danger">
+                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- Content -->
+                @RenderBody()
+            </main>
+        </div>
+    }
+    else
+    {
+        <!-- Standard User Layout -->
+        <header>
+            <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+                <div class="container">
+                    <a class="navbar-brand text-danger fw-bold" asp-controller="Home" asp-action="Index">
+                        <i class="fas fa-tint me-2"></i>LifeStreamBDMS
+                    </a>
+                    <div class="collapse navbar-collapse">
+                        <ul class="navbar-nav me-auto">
+                            <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Donor" asp-action="Register">Become a Donor</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="BloodRequest" asp-action="Request">Request Blood</a></li>
+                        </ul>
+
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-secondary me-3" id="darkModeToggle">
+                                <i class="fas @(isDarkMode ? "fa-sun" : "fa-moon")"></i>
+                            </button>
+                            @if (userRole == "Guest")
+                            {
+                                <a class="btn btn-outline-primary mx-2" asp-controller="Account" asp-action="Login">Login</a>
+                                <a class="btn btn-success" asp-controller="Account" asp-action="Register">Register</a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-danger" asp-controller="Account" asp-action="Logout">Logout</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <main class="container mt-4">
+            @RenderBody()
+        </main>
+    }
+
+    <footer class="border-top text-center py-4 mt-5">
+        <div class="container">
+            <small class="text-muted">
+                © 2025 LifeStreamBDMS -
+                <a asp-controller="Home" asp-action="Privacy" class="text-decoration-none">Privacy Policy</a>
+            </small>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @RenderSection("Scripts", required: false)
+
+    <script>
+        // Dark Mode Toggle
+        document.getElementById('darkModeToggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode') ? 'enabled' : 'disabled');
+        });
+
+        // Initialize dark mode
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.body.classList.add('dark-mode');
+            document.querySelector('#darkModeToggle i').classList.replace('fa-moon', 'fa-sun');
+        }
+    </script>
+</body>
+</html>

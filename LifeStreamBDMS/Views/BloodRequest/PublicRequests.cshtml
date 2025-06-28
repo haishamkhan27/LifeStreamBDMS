@@ -1,0 +1,38 @@
+﻿@model IEnumerable<LifeStreamBDMS.Models.BloodRequest>
+@{
+    ViewData["Title"] = "Active Blood Requests";
+}
+<h2>Blood Requests Needing Donors</h2>
+
+@if (!Model.Any())
+{
+    <p class="alert alert-info">No active blood requests available.</p>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Donor Name</th>
+                <th>Blood Type</th>
+                <th>Contact</th>
+                <th>Date</th>
+                <th>Hospital</th>
+                <th>Location</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td>@r.DonorName</td>
+                    <td>@r.BloodType</td>
+                    <td>@r.ContactNumber</td>
+                    <td>@r.RequestDate.ToShortDateString()</td>
+                    <td>@r.HospitalName</td>
+                    <td>@r.Location</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

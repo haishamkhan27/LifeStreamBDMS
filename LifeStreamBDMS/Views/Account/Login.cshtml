@@ -1,0 +1,99 @@
+﻿@model LifeStreamBDMS.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="container d-flex align-items-center justify-content-center min-vh-100 bg-light">
+    <div class="card shadow-lg p-4 rounded-4 bg-white bg-opacity-75" style="max-width: 420px; width: 100%;">
+        <div class="card-header text-center bg-primary text-white rounded-4 mb-3">
+            <h2><i class="bi bi-person-lock"></i> Secure Login</h2>
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Login" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Username" class="form-label fw-semibold">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                        <input asp-for="Username" class="form-control" placeholder="Enter your username" required />
+                    </div>
+                    <span asp-validation-for="Username" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label fw-semibold">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                        <input asp-for="Password" type="password" class="form-control" placeholder="Enter your password" required />
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+
+                <input type="hidden" id="selectedRole" name="role" value="User" />
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="button" class="btn btn-primary btn-lg fw-bold" onclick="setRoleAndSubmit('User')">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Login as User
+                    </button>
+                    <button type="button" class="btn btn-warning btn-lg fw-bold text-dark" onclick="setRoleAndSubmit('Admin')">
+                        <i class="bi bi-shield-lock-fill me-1"></i> Login as Admin
+                    </button>
+                </div>
+            </form>
+
+            <hr class="my-4" />
+
+            <div class="text-center">
+                <p class="mb-2">New here?</p>
+                <a class="btn btn-success fw-semibold" asp-action="Register" asp-controller="Account" asp-route-role="User">
+                    <i class="bi bi-person-plus-fill me-1"></i> Register as User
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+        body {
+            background: linear-gradient(to right, #f8f9fa, #e0eafc);
+        }
+
+        .card {
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .input-group-text {
+            background-color: #f1f3f5;
+            border-right: 0;
+        }
+
+        .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+
+        .btn:hover {
+            transform: scale(1.02);
+            transition: 0.2s ease;
+        }
+
+        .btn-warning:hover {
+            background-color: #ffc107 !important;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        function setRoleAndSubmit(role) {
+            document.getElementById("selectedRole").value = role;
+            document.forms[0].submit();
+        }
+    </script>
+}

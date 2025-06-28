@@ -1,0 +1,118 @@
+﻿@model LifeStreamBDMS.Models.BloodRequest
+
+@{
+    ViewData["Title"] = "Blood Request";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card shadow-lg border-0 rounded-4 bg-white bg-opacity-75 backdrop-blur p-4">
+                <div class="card-body">
+                    <h2 class="text-center text-danger fw-bold mb-4">
+                        <i class="bi bi-droplet-half"></i> Request Blood
+                    </h2>
+
+                    <form method="post" class="row g-3">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="col-md-6">
+                            <label asp-for="DonorName" class="form-label fw-semibold">Donor Name</label>
+                            <input asp-for="DonorName" class="form-control" placeholder="Enter full name" />
+                            <span asp-validation-for="DonorName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="BloodType" class="form-label fw-semibold">Blood Type</label>
+                            <select asp-for="BloodType" class="form-select">
+                                <option value="">Select Blood Type</option>
+                                <option>A+</option>
+                                <option>A-</option>
+                                <option>B+</option>
+                                <option>B-</option>
+                                <option>AB+</option>
+                                <option>AB-</option>
+                                <option>O+</option>
+                                <option>O-</option>
+                            </select>
+                            <span asp-validation-for="BloodType" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ContactNumber" class="form-label fw-semibold">Contact Number</label>
+                            <input asp-for="ContactNumber" class="form-control" placeholder="e.g., 03001234567" />
+                            <span asp-validation-for="ContactNumber" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="RequestDate" class="form-label fw-semibold">Request Date</label>
+                            <input asp-for="RequestDate" type="date" class="form-control" />
+                            <span asp-validation-for="RequestDate" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="HospitalName" class="form-label fw-semibold">Hospital Name</label>
+                            <input asp-for="HospitalName" class="form-control" placeholder="e.g., Shifa International" />
+                            <span asp-validation-for="HospitalName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Location" class="form-label fw-semibold">Location</label>
+                            <input asp-for="Location" class="form-control" placeholder="City or Area" />
+                            <span asp-validation-for="Location" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12 text-center mt-4">
+                            <button type="submit" class="btn btn-danger btn-lg px-4 shadow-sm me-2">
+                                <i class="bi bi-send-fill me-1"></i> Submit Request
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+        .form-control:focus, .form-select:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+
+        .btn-danger:hover {
+            transform: scale(1.03);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            border-radius: 1rem;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #6c757d;
+            color: #fff;
+        }
+    </style>
+}
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+        $(document).ready(function () {
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            $('#RequestDate').attr('min', today);
+
+            // Sanitize phone number input
+            $('#ContactNumber').on('input', function () {
+                this.value = this.value.replace(/[^0-9+]/g, '');
+            });
+        });
+    </script>
+}

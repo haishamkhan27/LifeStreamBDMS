@@ -1,0 +1,29 @@
+﻿@model LifeStreamBDMS.Models.BloodInventory
+
+@{
+    ViewData["Title"] = "Edit Blood Inventory";
+}
+
+<h2>Edit Blood Inventory</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="BloodType" class="form-label">Blood Type</label>
+        <input asp-for="BloodType" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="AvailableUnits" class="form-label">Available Units</label>
+        <input asp-for="AvailableUnits" type="number" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="LastUpdated" class="form-label">Last Updated</label>
+        <p class="form-control">@Model.LastUpdated.ToShortDateString()</p> <!-- Display instead of input -->
+    </div>
+
+    <button type="submit" class="btn btn-warning">Update</button>
+    <a asp-action="Inventory" class="btn btn-secondary">Cancel</a>
+</form>

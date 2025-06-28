@@ -1,0 +1,40 @@
+﻿@model IEnumerable<LifeStreamBDMS.Models.Donor>
+
+@{
+    ViewData["Title"] = "Registered Donors";
+}
+
+<h1>Registered Donors</h1>
+@if (User.IsInRole("Admin"))
+{
+    <p class="text-success">Admin access confirmed!</p>
+}
+else
+{
+    <p class="text-danger">Admin role not detected. You may need to re-login.</p>
+}
+
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Blood Type</th>
+            <th>City</th>
+            <th>Last Donation Date</th>
+            <th>Contact Number</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var donor in Model)
+        {
+            <tr>
+                <td>@donor.Name</td>
+                <td>@donor.BloodType</td>
+                <td>@donor.City</td>
+                <td>@donor.LastDonationDate.ToString("yyyy-MM-dd")</td>
+                <td>@donor.ContactNumber</td>
+            </tr>
+        }
+    </tbody>
+</table>
